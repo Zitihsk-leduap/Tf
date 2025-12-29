@@ -77,12 +77,12 @@ resource "aws_route_table" "dev_proj_1_public_route_table"{
 
 
 
-# #public route table association with public subnet
-# resource "aws_route_table_association" "dev_proj_1_public_route_table_association" {
-#   count = length(aws.subnet.dev_proj_1_public_subnets)
-#   subnet_id = aws.subnet.dev_proj_1_public_subnets[count.index].id
-#   route_table_id = aws_route_table.dev_proj_1_public_route_table.id
-# }
+#public route table association with public subnet
+resource "aws_route_table_association" "dev_proj_1_public_route_table_association" {
+  count = length(aws_subnet.dev_proj_1_public_subnets)
+  subnet_id = aws_subnet.dev_proj_1_public_subnets[count.index].id
+  route_table_id = aws_route_table.dev_proj_1_public_route_table.id
+}
 
 
 
@@ -95,10 +95,10 @@ resource "aws_route_table" "dev_proj_1_private_route_table"{
 }
 
 
-# #Route table association with private subnet
+#Route table association with private subnet
 
-# resource "aws_route_table_association" "dev_proj_1_private_route_table_association" {
-#   count = length(aws.subnet.dev_proj_1_private_subnets)
-#   subnet_id = aws.subnet.dev_proj_1_private_subnets[count.index].id
-#   route_table_id = aws_route_table.dev_proj_1_private_route_table.id
-# }
+resource "aws_route_table_association" "dev_proj_1_private_route_table_association" {
+  count = length(aws_subnet.dev_proj_1_private_subnets)
+  subnet_id = aws_subnet.dev_proj_1_private_subnets[count.index].id
+  route_table_id = aws_route_table.dev_proj_1_private_route_table.id
+}

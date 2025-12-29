@@ -1,3 +1,5 @@
 .terraform/
 certificate-manager/
 hosted-zone/
+terraform.tfstate/
+terraform.tfstate.backup/
