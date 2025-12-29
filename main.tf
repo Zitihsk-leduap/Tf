@@ -7,3 +7,11 @@ module "networking" {
   cidr_private_subnet  = var.cidr_private_subnet
 }
 
+
+module "security_group" {
+  source = "./security-groups"
+  vpc_id = module.networking.dev_proj_1_vpc_id
+  ec2_sg_name = "dev-proj-1-jenkins-ec2-sg"
+  ec2_jenkins_sg_name = "Allow port 8080 for jenkins access"
+}
+
