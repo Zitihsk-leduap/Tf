@@ -10,30 +10,37 @@ output "sg_ec2_jenkins_port_8080" {
   value = aws_security_group.ec2_jenkins_port_8080.id
 }
 
+# resource "aws_security_group" "ec2_sg_ssh_http" {
+#   name        = var.ec2_sg_name
+#   description = "Enable the Port 22(SSH) & Port 80(http)"
+#   vpc_id      = var.vpc_id
+
 resource "aws_security_group" "ec2_sg_ssh_http" {
-  name        = var.ec2_sg_name
-  description = "Enable the Port 22(SSH) & Port 80(http)"
-  vpc_id      = var.vpc_id
+  name = var.ec2_sg_name
+  vpc_id = var.vpc_id
+  description = "Enable the Port 22 and Port 80 for ssh and http respectively"
+
 
   # ssh for terraform remote exec
   ingress {
-    description = "Allow remote SSH from anywhere"
+    description = "Allow remote ssh from anywhere"
     cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
   }
 
-  # enable http
-  ingress {
-    description = "Allow HTTP request from anywhere"
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-  }
+ingress {
+  description = "Allow HTTP request from anywhere"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port = 80
+  to_port = 80
+  protocol = "tcp"
+}
 
-  # enable http
+
+  
+# enable http
   ingress {
     description = "Allow HTTP request from anywhere"
     cidr_blocks = ["0.0.0.0/0"]
@@ -75,3 +82,16 @@ resource "aws_security_group" "ec2_jenkins_port_8080" {
   }
 }
 
+# resource "aws_security_group" "random" {
+#   name = "random_sg"
+#   description = "A random security group"
+#   vpc_id = var.vpc_id
+
+#   ingress {
+#     from_port = 1234
+#     to_port = 1234
+#     protocol = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+
+# }
