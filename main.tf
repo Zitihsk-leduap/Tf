@@ -32,17 +32,6 @@ module "jenkins" {
   })
 }
 
-
-# module "lb-target-group" {
-#   source = "./lb-target-group"
-#   lb_target_group_name = "jenkins-lb-target-group"
-#   # vpc_id = module.networking.dev_proj_1_vpc_id
-#   lb_target_group_port = 8080
-#   lb_target_group_protocol = "HTTP"
-#   vpc_id = module.networking.dev_proj_1_vpc_id
-#   ec2_instance_id = module.jenkins.jenkins_ec2_instance_ip
-# }
-
 module "lb_target-group" {
   source = "./lb-target-group"
   lb_target_group_name = "jenkins-lb-target-group"
@@ -50,4 +39,40 @@ module "lb_target-group" {
   lb_target_group_protocol = "HTTP"
   vpc_id = module.networking.dev_proj_1_vpc_id
   ec2_instance_id = module.jenkins.jenkins_ec2_instance_ip
+}
+
+
+module "load_balancer" {
+  source = "./load-balancer"
+  lb_name = "dev-proj-1-lb"
+  is_external = false
+  lb_type ="application"
+  sg_enable_ssh_https = module.security_group.sg_ec2_sg_ssh_http_id
+  subnet_ids = tolist(module.networking.dev_proj_1_public_subnets)
+  tag_name = "dev_proj_1_lb"
+  lb_target_group_arn = module.lb_target-group.dev_proj_1_lb_target_group_arn
+  ec2_instance_id = module.jenkins.jenkins_ec2_instance_ip
+  lb_listener_port = 80
+  lb_listener_protocol = "HTTP"
+  lb_listener_default_action = "forward"
+  lb_https_listener_port = 443
+  lb_https_listener_protocol = "HTTPS"
+  dev_proj_1_acm_arn = module.aws-certification-manager.dev_proj_1_acm_arn
+  lb_target_group_attachment_port = 8080
+}
+
+
+module "aws-certification-manager" {
+  source = "./aws-certificate-manager"
+  domain_name = "jenkins.devops1.kshitiz.com"
+  hosted_zone_id = module.hosted-zone.hosted_zone_id
+  }
+
+
+
+module "hosted-zone" {
+  source = "./hosted-zone"
+  domain_name = "jenkins.devops1.kshitiz.com"
+  aws_alb_dns_name = module.load_balancer.aws_lb_dns_name
+  aws_alb_zone_id = module.load_balancer.aws_lb_zone_id
 }
